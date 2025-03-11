@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queens Street Renaming & Intersections Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+    <!-- Styles for the Map and Overlay -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Link p5.js and Sound Library -->
+    <script src="sketch/p5.js"></script>
+    <script src="sketch/p5.sound.min.js"></script>
+
+    <!-- Link Weaving Sketch Styles -->
+    <link rel="stylesheet" href="sketch/style.css">
+</head>
+<body>
+
+    <h2>Queens Street Renaming & Intersections Map</h2>
+    <p>This interactive map displays renamed streets and intersections as dots.</p>
+    
+    <div id="map"></div>
+
+    <!-- Overlay for Weaving Sketch -->
+    <div id="overlay">
+        <div id="overlay-content">
+            <span id="close-overlay">&times;</span>
+            <div id="weaving-container"></div>
+            <div id="info-container">
+                <h3 id="street-name"></h3>
+                <p id="bio-info"></p>
+            </div>
+            <button id="weave-button">W E A V E</button>
+        </div>
+    </div>
+
+    <!-- Map and Sketch Scripts -->
+    <script src="map.js"></script>
+    <script src="sketch/weavingSketch.js"></script>
+
+</body>
+</html>
