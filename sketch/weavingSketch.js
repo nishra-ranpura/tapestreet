@@ -144,69 +144,94 @@ function startWeavingSketch(text) {
 
                 p.stroke(verticalColors[colorIndex]);
                 p.line(i + loomMargin * step, 0, i + loomMargin * step, p.height);
+
+                p.drawingContext.shadowBlur = 0;
             }
             drawRow(0);
         }
 
         function drawRow(i = 0) {
-    console.log(`Drawing row ${i}`); // ✅ Debugging
+            console.log(`Drawing row ${i}`); // ✅ Debugging
 
-    p.strokeWeight(step - empty);
-    let horizontalColors = colors.slice(verticalColorCount, verticalColorCount + horizontalColorCount);
-    let charsPerRow = Math.floor((p.width - 2 * loomMargin * step) / step);
+            p.strokeWeight(step - empty);
+            let horizontalColors = colors.slice(verticalColorCount, verticalColorCount + horizontalColorCount);
+            let charsPerRow = Math.floor((p.width - 2 * loomMargin * step) / step);
 
-    p.drawingContext.shadowBlur = 4;
-    p.drawingContext.shadowColor = 'rgba(0, 0, 0, 0.2)';
-    p.drawingContext.shadowOffsetX = 0;
-    p.drawingContext.shadowOffsetY = 4;
+            p.drawingContext.shadowBlur = 4;
+            p.drawingContext.shadowColor = 'rgba(0, 0, 0, 0.2)';
+            p.drawingContext.shadowOffsetX = 0;
+            p.drawingContext.shadowOffsetY = 4;
 
-    if (i >= checks.length) {
-        console.log("✅ Finished all rows");
-        return; // ✅ Stop when all rows are drawn
-    }
+            if (i >= checks.length) {
+                console.log("✅ Finished all rows");
+                return; // ✅ Stop when all rows are drawn
+            }
 
-    let y = p.height - (i + 1) * step - loomMargin * step - 10;
-    p.stroke(horizontalColors[Math.floor(i / CW) % horizontalColors.length]);
+            let y = p.height - (i + 1) * step - loomMargin * step - 10;
+            p.stroke(horizontalColors[Math.floor(i / CW) % horizontalColors.length]);
 
-    if (i === 0) {
-        console.log("➡ Drawing first line");
-        p.line(0, y, loomMargin * step + empty / 2, y);
-    }
+            if (i === 0) {
+                console.log("➡ Drawing first line");
+                p.line(0, y, loomMargin * step + empty / 2, y);
+            }
 
-    p.drawingContext.shadowBlur = 0;
+            p.drawingContext.shadowBlur = 0;
 
-    function drawChar(j) {
-        if (j >= checks[i].length) {
-            console.log(`✅ Finished row ${i}, moving to row ${i + 1}`);
-            setTimeout(() => drawRow(i + 1), 50);
-            direction *= -1;
-            return;
+            function drawChar(j) {
+                if (j >= checks[i].length) {
+                  if (i === checks.length - 1) {
+                    if (direction === 1) {
+                      p.line(charsPerRow * step + (loomMargin * step - empty / 2), y, p.width, y); // Right side loose end
+                    } else {
+                      p.line(0, y, loomMargin * step + empty / 2, y); // Left side loose end
+                    }
+                  } else {
+                    let nextY = p.height - (i + 1) * step - loomMargin * step; // Y position of the next row
+                    let connectX = (direction === 1) ? (charsPerRow + loomMargin) * step : loomMargin * step;
+                    // strokeCap(ROUND);
+                    //selvedge
+                    p.noFill();
+                    if (direction === 1) {
+                      //right selvedge
+                      p.arc(connectX - 1, nextY - step - 2*empty, step + empty, step, p.PI + p.HALF_PI, p.HALF_PI);
+                      // line(connectX + 4, y +4, connectX + 4, nextY - 4-10); // lineR
+                    } else {
+                      //left selvedge
+                      p.arc(connectX + 1, nextY - step - 2*empty, step + empty, step, p.HALF_PI, p.PI + p.HALF_PI);
+                      // line(connectX - 4, y +4, connectX - 4, nextY - 4-10); // lineL
+                    }
+                    // filter(BLUR, 3);
+                    // strokeCap(SQUARE);
+                  }
+            
+                  setTimeout(() => drawRow(i + 1), 50); // Start next row after a delay
+                  direction *= -1; 
+                  return;
+                }
+            
+                let x = (direction === 1) ? (j + loomMargin) * step : (charsPerRow - j + loomMargin - 1) * step;
+                let value = checks[i][j].value ? 1 : 0; // 1 for binary '1', 0 for binary '0'
+                let colorIndex = verticalColorSequence[j % verticalColorSequence.length];
+                let noteBaseIndex = value === 1 ? 0 : 1;
+            
+                let adjustedNoteIndex = (noteBaseIndex + colorIndex) % noteSounds.length;
+            
+                if (checks[i][j].value) {
+                    p.line(x - empty / 2, y, x + step + empty / 2, y); //weft up
+                    noteSounds[adjustedNoteIndex].start();
+                    setTimeout(() => noteSounds[adjustedNoteIndex].stop(), 1000);
+                } else {
+                    // p.line(x - empty / 2, y, x + empty/2, y); //weft in gaps
+                    //activate below 2 lines and deactivate the above one if weft gets glitchy
+                    p.line(x - empty / 2, y, x, y); //weft in gaps
+                    p.line(x + step, y, x + step + empty / 2, y); //weft in gaps
+                    noteSounds[(adjustedNoteIndex + 2) % noteSounds.length].start();
+                    setTimeout(() => noteSounds[(adjustedNoteIndex + 2) % noteSounds.length].stop(), 100);
+                }
+                setTimeout(() => drawChar(j + 1), 60);
+            }
+            drawChar(0);
         }
-
-        let x = (direction === 1) ? (j + loomMargin) * step : (charsPerRow - j + loomMargin - 1) * step;
-        let value = checks[i][j].value ? 1 : 0;
-        let colorIndex = verticalColorSequence[j % verticalColorSequence.length];
-        let noteBaseIndex = value === 1 ? 0 : 1;
-
-        let adjustedNoteIndex = (noteBaseIndex + colorIndex) % noteSounds.length;
-
-        if (checks[i][j].value) {
-            console.log(`🎵 Playing sound ${adjustedNoteIndex}`);
-            p.line(x - empty / 2, y, x + step + empty / 2, y);
-            noteSounds[adjustedNoteIndex].start();
-            setTimeout(() => noteSounds[adjustedNoteIndex].stop(), 1000);
-        } else {
-            console.log(`- Skipping weave at x=${x}, y=${y}`);
-            p.line(x - empty / 2, y, x + empty / 2, y);
-            noteSounds[(adjustedNoteIndex + 2) % noteSounds.length].start();
-            setTimeout(() => noteSounds[(adjustedNoteIndex + 2) % noteSounds.length].stop(), 100);
-        }
-
-        setTimeout(() => drawChar(j + 1), 60);
-    }
-
-    drawChar(0);
-}
 
 
         class Check {
@@ -214,6 +239,11 @@ function startWeavingSketch(text) {
                 this.index = index;
                 this.rang = rang;
                 this.value = value;
+            }
+            display() {
+                p.fill(255, 200);
+                p.stroke(0);
+                p.strokeWeight(2);
             }
         }
     });
