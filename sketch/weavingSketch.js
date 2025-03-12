@@ -217,21 +217,21 @@ function startWeavingSketch(text) {
                 let adjustedNoteIndex = (noteBaseIndex + colorIndex) % noteSounds.length;
             
                 if (checks[i][j].value) {
-                  p.line(x - empty / 2, y, x + step + empty / 2, y); //weft up
-                  noteSounds[adjustedNoteIndex].start();
-                  setTimeout(() => noteSounds[adjustedNoteIndex].stop(), 1000);
+                    p.line(x - empty / 2, y, x + step + empty / 2, y); //weft up
+                    noteSounds[adjustedNoteIndex].start();
+                    setTimeout(() => noteSounds[adjustedNoteIndex].stop(), 1000);
                 } else {
-                  p.line(x - empty / 2, y, x + empty/2, y); //weft in gaps
-                  //activate below 2 lines and deactivate the above one if weft gets glitchy
-                  // line(x - empty / 2, y, x, y); //weft in gaps
-                  // line(x + step, y, x + step + empty / 2, y); //weft in gaps
-                  noteSounds[(adjustedNoteIndex + 2) % noteSounds.length].start();
-                  setTimeout(() => noteSounds[(adjustedNoteIndex + 2) % noteSounds.length].stop(), 100);
+                    // p.line(x - empty / 2, y, x + empty/2, y); //weft in gaps
+                    //activate below 2 lines and deactivate the above one if weft gets glitchy
+                    p.line(x - empty / 2, y, x, y); //weft in gaps
+                    p.line(x + step, y, x + step + empty / 2, y); //weft in gaps
+                    noteSounds[(adjustedNoteIndex + 2) % noteSounds.length].start();
+                    setTimeout(() => noteSounds[(adjustedNoteIndex + 2) % noteSounds.length].stop(), 100);
                 }
                 setTimeout(() => drawChar(j + 1), 60);
             }
-        drawChar(0);
-    }
+            drawChar(0);
+        }
 
 
         class Check {
@@ -239,6 +239,11 @@ function startWeavingSketch(text) {
                 this.index = index;
                 this.rang = rang;
                 this.value = value;
+            }
+            display() {
+                p.fill(255, 200);
+                p.stroke(0);
+                p.strokeWeight(2);
             }
         }
     });
