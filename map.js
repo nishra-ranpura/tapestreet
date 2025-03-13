@@ -87,6 +87,17 @@ function closeOverlay() {
     // Stop and remove the p5.js sketch
     if (window.sketchInstance) {
         window.sketchInstance.remove();
+        console.log("Sketch instance has stopped.");
+function stopWeavingSketch() {
+    if (sketchInstance) {
+        sketchInstance.remove();
+        sketchInstance = null;
+    }
+}
         window.sketchInstance = null; // Clear the reference
     }
 }
+
+
+
+

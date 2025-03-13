@@ -10,7 +10,7 @@ function startWeaveSketch(text) {
 
 const weaveSketch = (p) => {
     let apiKey =
-      "k-proj-79SbzXwF3wCT1jMXfJJ9EyWaBWwziJCj0IppOSoLOtxM7vaS32P-bZ1_LY-nZXi0g2bwEEhNUTT3BlbkFJT40HZZpMsguIk_7pP2ds-OlgliHGSg9hu3R658zWS5QLSTTUNGj5RyakyVKiczrj2BsnmdvaQA"; // LocalModel AI API key
+      "-proj-79SbzXwF3wCT1jMXfJJ9EyWaBWwziJCj0IppOSoLOtxM7vaS32P-bZ1_LY-nZXi0g2bwEEhNUTT3BlbkFJT40HZZpMsguIk_7pP2ds-OlgliHGSg9hu3R658zWS5QLSTTUNGj5RyakyVKiczrj2BsnmdvaQA"; // LocalModel AI API key
     // let input, submitButton;
     let colors = [];
     let checks = [];
@@ -212,7 +212,12 @@ const weaveSketch = (p) => {
       p.drawingContext.shadowColor = "rgba(0, 0, 0, 0.2)";
       p.drawingContext.shadowOffsetX = 0;
       p.drawingContext.shadowOffsetY = 4;
-      if (i >= checks.length) return;
+      if (i >= checks.length) {
+        setTimeout(() => {
+            document.getElementById("popupModal").style.display = "block";
+        }, 1000); // Show pop-up after the animation ends
+        return;
+    }
 
       let y = p.height - (i + 1) * step - loomMargin * step - 10;  // ✅ p.height
       
@@ -320,7 +325,12 @@ const weaveSketch = (p) => {
 };
 
 
-
+function stopWeavingSketch() {
+    if (sketchInstance) {
+        sketchInstance.remove();
+        sketchInstance = null;
+    }
+}
 
 
 
