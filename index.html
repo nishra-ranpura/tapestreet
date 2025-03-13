@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TapeStreet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/addons/p5.sound.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h2>TapeStreet</h2>
+    <p>The fabric of NYC</p>
+    
+    <div id="map"></div>
+
+    <!-- Overlay for Weave Animation -->
+    <div id="weaveOverlay" class="overlay">
+        <span class="close-btn" onclick="closeOverlay()">&times;</span>
+    <div class="overlay-content">
+        
+        <div id="sketch-container"></div>
+        <div id="info-container">
+            <h3 id="new-name"></h3>
+            <p id="bio-info"></p>
+        </div>
+    </div>
+</div>
+
+
+    <script src="map.js"></script> <!-- External map logic -->
+    <script src="weaveSketch.js"></script> <!-- External p5.js sketch logic -->
+</body>
+</html>
